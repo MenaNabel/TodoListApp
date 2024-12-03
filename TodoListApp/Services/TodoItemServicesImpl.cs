@@ -21,15 +21,17 @@ namespace TodoListApp.Services
         private IServiceProvider _serviceProvider;
         private ITodoItemService _todoItemService;
         private readonly IMapper _mapper;
+        private readonly ILogger<TodoItemServicesImpl> _logger;
 
         public TodoItemServicesImpl(IServiceProvider serviceProvider,
             IRepositoryAsync<TodoItem> repositoryAsync, IDeleteRepository<TodoItem> deleteRepository,
-            IMapper mapper)
+            IMapper mapper, ILogger<TodoItemServicesImpl> logger)
         {
             _serviceProvider = serviceProvider;
             _repositoryAsync = repositoryAsync;
             _mapper = mapper;
             _deleterepository = deleteRepository;
+            _logger = logger;
         }
 
         private ITodoItemService CreateTodoItemServices()
@@ -41,9 +43,11 @@ namespace TodoListApp.Services
 
         async Task<UserMangerResonse> ITodoItemService.AddTodoItem(TodoItemDTO todoItemDTO)
         {
+            _logger.LogInformation("Adding new Todo item: {@Todo}", todoItemDTO);
             var todoItem = await CreateTodoItemAsync(todoItemDTO);
             if (todoItem != null)
             {
+                _logger.LogInformation("Todo item added successfully with ID: {Id}", todoItem.Id);
                 return new UserMangerResonse("Todo Item is created successfully", true);
             }
             return new UserMangerResonse("TodoItem is not created ", false);
@@ -137,8 +141,6 @@ namespace TodoListApp.Services
         private void TodoItemAddProcess(TodoItem todoItem)
         {
             todoItem.Id = 0;
-            //if (todoItem.CreatedDate == null)
-            //    todoItem.CreatedDate = DateTime.Now;
         }
 
         private async Task<TodoItemDTO> CreateTodoItemAsync(TodoItemDTO todoItemDTO)
@@ -180,22 +182,6 @@ namespace TodoListApp.Services
                 throw ex;
             }
         }
-
-        //public Task<IEnumerable<PortViewModel>> AddRange(IEnumerable<PortViewModel> Collection)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //Task<IPaginate<TodoItemDTO>> IReadAsync<TodoItemDTO>.GetAll(int index, int Size)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task<IEnumerable<AddServiceViewModel>> AddRange(IEnumerable<AddServiceViewModel> Collection)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         #endregion
     }
 }

@@ -1,7 +1,5 @@
-﻿using TodoList_Base.Database;
-using TodoList_Base.DTO;
+﻿using TodoList_Base.DTO;
 using TodoList_Base.Shared;
-//using TodoList_Base.Database;
 
 namespace TodoListApp.Services.Interfaces
 {
